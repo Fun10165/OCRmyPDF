@@ -735,8 +735,7 @@ def check_options(options):
     settings = _build_settings(options)
     _validate_mineru_settings(settings)
 
-    jobs = options.jobs or 0
-    if jobs > 1:
+    if options.jobs is None or options.jobs > 1:
         log.warning(
             "MinerU OCR is a remote API and may rate-limit concurrent uploads. "
             "Consider using --jobs 1 if requests fail."
