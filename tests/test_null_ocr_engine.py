@@ -167,3 +167,14 @@ class TestOcrEngineOption:
                 assert 'auto' in action.choices
                 assert action.default == 'auto'
                 break
+
+    def test_ocr_engine_choices_include_mineru(self):
+        """--ocr-engine should include 'mineru' as an available choice."""
+        from ocrmypdf.cli import get_parser
+
+        parser = get_parser()
+
+        for action in parser._actions:
+            if '--ocr-engine' in action.option_strings:
+                assert 'mineru' in action.choices
+                break

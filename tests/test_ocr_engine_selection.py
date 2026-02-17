@@ -54,6 +54,15 @@ class TestOcrEngineCliOption:
         args = parser.parse_args(['--ocr-engine', 'none', 'in.pdf', 'out.pdf'])
         assert args.ocr_engine == 'none'
 
+    def test_ocr_engine_accepts_mineru(self):
+        """--ocr-engine should accept 'mineru'."""
+        from ocrmypdf.cli import get_parser
+
+        parser = get_parser()
+
+        args = parser.parse_args(['--ocr-engine', 'mineru', 'in.pdf', 'out.pdf'])
+        assert args.ocr_engine == 'mineru'
+
     def test_ocr_engine_default_is_auto(self):
         """--ocr-engine should default to 'auto'."""
         from ocrmypdf.cli import get_parser
@@ -136,4 +145,29 @@ class TestOcrEnginePluginSelection:
         options.ocr_engine = 'auto'
 
         engine = null_ocr.get_ocr_engine(options=options)
+        assert engine is None
+
+    def test_mineru_selected_when_mineru(self):
+        """MinerUOcrEngine should be returned when ocr_engine='mineru'."""
+        from unittest.mock import MagicMock
+
+        from ocrmypdf.builtin_plugins import mineru_ocr
+        from ocrmypdf.builtin_plugins.mineru_ocr import MinerUOcrEngine
+
+        options = MagicMock()
+        options.ocr_engine = 'mineru'
+
+        engine = mineru_ocr.get_ocr_engine(options=options)
+        assert isinstance(engine, MinerUOcrEngine)
+
+    def test_mineru_returns_none_when_auto(self):
+        """mineru_ocr.get_ocr_engine() should return None when ocr_engine='auto'."""
+        from unittest.mock import MagicMock
+
+        from ocrmypdf.builtin_plugins import mineru_ocr
+
+        options = MagicMock()
+        options.ocr_engine = 'auto'
+
+        engine = mineru_ocr.get_ocr_engine(options=options)
         assert engine is None
